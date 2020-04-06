@@ -1,6 +1,3 @@
-
-
-
 MLChange_p = [];
 MLChange_p_false_alarm = [];
 MLChange_p_false_dismissal = []; 
@@ -10,8 +7,9 @@ BayesChange_p_false_alarm = [];
 BayesChange_p_false_dismissal = []; 
 BayesChange_risk = [];
 % adjust threshold
-for PH0 = [0.3,0.4,0.5,0.6,0.7]
-    PH1 = 1-PH0;
+for n_var = [1,4,9,16,25]
+    PH0 = 0.6;
+    PH1 = 0.4;
     
     cnt = [];
     % ML method
@@ -42,7 +40,7 @@ for PH0 = [0.3,0.4,0.5,0.6,0.7]
         % swept-frequency cosine, the target signal
         s = chirp(t,0,301,250);
         % white noise
-        n_mean = 0; n_var = 25;
+        n_mean = 0; %n_var = 25;
         n = n_mean+sqrt(n_var)*randn(1,length(t));
 
         % probability of containing s(t) = 0.4
@@ -117,7 +115,8 @@ for PH0 = [0.3,0.4,0.5,0.6,0.7]
 
     end
 
-    fprintf('P(H1) = %f, P(H0) = %f\n',PH1,PH0);
+    %fprintf('P(H1) = %f, P(H0) = %f\n',PH1,PH0);
+    fprintf('n_var = %f\n',n_var);
     fprintf('ML   : detection rate:%f%%, ',ML_p(100)*100);
     fprintf('false alarm rate:%f%%, false dismissal rate:%f%%, ',ML_p_false_alarm(100)*100, ML_p_false_dismissal(100)*100);
     fprintf('risk:%f\n',ML_risk(100));
@@ -135,13 +134,12 @@ for PH0 = [0.3,0.4,0.5,0.6,0.7]
     BayesChange_risk = [BayesChange_risk,Bayes_risk(100)];
 end
 
-subplot(4,2,1);plot([0.3,0.4,0.5,0.6,0.7],MLChange_p*100);ylabel('%');title('ML detection rate');
-subplot(4,2,3);plot([0.3,0.4,0.5,0.6,0.7],MLChange_p_false_alarm*100);ylabel('%');title('ML false alarm rate');
-subplot(4,2,5);plot([0.3,0.4,0.5,0.6,0.7],MLChange_p_false_dismissal*100);ylabel('%');title('ML false dismissal rate');
-subplot(4,2,7);plot([0.3,0.4,0.5,0.6,0.7],MLChange_risk);xlabel('P(H1)');title('ML risk');
+subplot(4,2,1);scatter([1,4,9,16,25],MLChange_p*100);ylabel('%');title('ML detection rate P_d');
+subplot(4,2,3);scatter([1,4,9,16,25],MLChange_p_false_alarm*100);ylabel('%');title('ML false alarm rate P_f');
+subplot(4,2,5);scatter([1,4,9,16,25],MLChange_p_false_dismissal*100);ylabel('%');title('ML false dismissal rate P_m');
+subplot(4,2,7);scatter([1,4,9,16,25],MLChange_risk);xlabel('{\sigma_n}^2');title('ML risk');
 
-subplot(4,2,2);plot([0.3,0.4,0.5,0.6,0.7],BayesChange_p*100);ylabel('%');title('Bayes detection rate');
-subplot(4,2,4);plot([0.3,0.4,0.5,0.6,0.7],BayesChange_p_false_alarm*100);ylabel('%');title('Bayes false dismissal rate');
-subplot(4,2,6);plot([0.3,0.4,0.5,0.6,0.7],BayesChange_p_false_dismissal*100);ylabel('%');title('Bayes false dismissal rate');
-subplot(4,2,8);plot([0.3,0.4,0.5,0.6,0.7],BayesChange_risk);xlabel('P(H1)');title('Bayes risk');
-
+subplot(4,2,2);scatter([1,4,9,16,25],BayesChange_p*100);ylabel('%');title('Bayes detection rate P_d');
+subplot(4,2,4);scatter([1,4,9,16,25],BayesChange_p_false_alarm*100);ylabel('%');title('Bayes false dismissal rate P_f');
+subplot(4,2,6);scatter([1,4,9,16,25],BayesChange_p_false_dismissal*100);ylabel('%');title('Bayes false dismissal rate P_m');
+subplot(4,2,8);scatter([1,4,9,16,25],BayesChange_risk);xlabel('{\sigma_n}^2');title('Bayes risk');
